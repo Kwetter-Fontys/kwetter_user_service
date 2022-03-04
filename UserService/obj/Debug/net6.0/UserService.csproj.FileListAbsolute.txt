@@ -11,15 +11,7 @@ C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\K4os.Hash.xxHash
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Caching.Abstractions.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
-C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\MySql.Data.dll
 C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Ubiety.Dns.Core.dll
@@ -46,3 +38,7 @@ C:\wamp64\www\kwetter_user_service\UserService\obj\Debug\net6.0\refint\UserServi
 C:\wamp64\www\kwetter_user_service\UserService\obj\Debug\net6.0\UserService.pdb
 C:\wamp64\www\kwetter_user_service\UserService\obj\Debug\net6.0\UserService.genruntimeconfig.cache
 C:\wamp64\www\kwetter_user_service\UserService\obj\Debug\net6.0\ref\UserService.dll
+C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\wamp64\www\kwetter_user_service\UserService\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
