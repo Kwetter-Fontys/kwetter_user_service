@@ -13,7 +13,9 @@ namespace UserService.DAL
         //public DbSet<Followers> Followers { get; set; }
         //public DbSet<Following> Following { get; set; }
 
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
