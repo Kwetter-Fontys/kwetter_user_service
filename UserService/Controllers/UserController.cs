@@ -22,10 +22,16 @@ namespace UserService.Controllers
             UserRepository = useRepo;
         }
 
-        [HttpGet]
+        [HttpGet] // GET /api/usercontroller
         public List<User> GetAllUsers()
         {
             return UserRepository.GetUsers();
+        }
+
+        [HttpGet("{id}")]   // GET /api/usercontroller/xyz
+        public User GetProduct(string id)
+        {
+            return UserRepository.GetUser(id);
         }
     }
 }

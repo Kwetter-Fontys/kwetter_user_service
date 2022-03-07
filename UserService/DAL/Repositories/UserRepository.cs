@@ -19,6 +19,11 @@ namespace UserService.DAL.Repositories
         {
             return userContext.Users.ToList();
         }
+        public User GetUser(string id)
+        {
+            int intId = Convert.ToInt32(id);
+            return userContext.Users.Find(intId);
+        }
         public void AddUser(User user)
         {
         }
