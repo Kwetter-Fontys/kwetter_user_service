@@ -1,4 +1,5 @@
 ﻿using UserService.DAL;
+using UserService.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +10,14 @@ UserController userController;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+//Inject repo
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<UserContext>(options =>
   options.UseMySQL("server=localhost;database=kwetter;user=root;password="));
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -30,6 +34,9 @@ else
     //app.UseMigrationsEndPoint();
 }
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.MapControllers();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -39,17 +46,6 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
     UserInitializer.Initialize(context);
 }
-app.UseStaticFiles();
 
-app.UseRouting();
-
-//app.UseAuthorization();
-app.MapGet("/users", () =>
-{
-    //This should be done by dependency injection however IDK
-    userController = new UserController(app.Services.CreateScope().ServiceProvider.GetRequiredService<UserContext>());
-    return userController.GetAllUsers();
-})
-.WithName("GetUsers");
 
 app.Run();
