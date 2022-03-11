@@ -9,7 +9,16 @@ using UserService.Controllers;
 UserController userController;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                      });
+});
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,7 +44,8 @@ else
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.MapControllers();
+app.UseCors(MyAllowSpecificOrigins);
+app.MapControllers().RequireCors(MyAllowSpecificOrigins);
 
 
 using (var scope = app.Services.CreateScope())

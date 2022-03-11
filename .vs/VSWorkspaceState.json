@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\UserService",
+    "\\UserService\\DAL"
   ],
   "PreviewInSolutionExplorer": false
 }
