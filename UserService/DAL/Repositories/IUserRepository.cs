@@ -10,6 +10,10 @@ namespace UserService.DAL.Repositories
     public interface IUserRepository
     {
         List<User> GetUsers();
-        User GetUser(string id);
+        List<User> GetFollowers(int id);
+        List<User> GetFollowings(int id);
+        User GetUser(int id);
+
+        User EditUser(int id, User user);
     }
 }

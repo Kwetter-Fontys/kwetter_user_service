@@ -8,13 +8,13 @@ namespace UserService.DAL
     {
         public UserContext(DbContextOptions<UserContext> options): base(options)
         {
+            
         }
         public DbSet<User> Users { get; set; }
-        //public DbSet<Followers> Followers { get; set; }
-        //public DbSet<Following> Following { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging(true);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,8 @@ namespace UserService.DAL
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.HasMany(e => e.Followers);
+                entity.HasMany(e => e.Following);
             });
         }
     }

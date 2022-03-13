@@ -19,11 +19,30 @@ namespace UserService.DAL.Repositories
         {
             return userContext.Users.ToList();
         }
-        public User GetUser(string id)
+        public List<User> GetFollowers(int id)
         {
-            int intId = Convert.ToInt32(id);
-            return userContext.Users.Find(intId);
+            //This returns all the followers that equal the id
+            return userContext.Users.SelectMany(u => u.Followers).Where(s => s.Id == id).ToList(); 
         }
+        public List<User> GetFollowings(int id)
+        {
+            //This returns all the follwings that equal the id
+            return userContext.Users.SelectMany(u => u.Following).Where(s => s.Id == id).ToList();
+        }
+
+        public User GetUser(int id)
+        {
+            return userContext.Users.Find(id);
+        }
+
+        public User EditUser(int id, User user)
+        {
+            //Should add catches
+            userContext.Users.Update(user);
+            userContext.SaveChanges();
+            return user;
+        }
+
         public void AddUser(User user)
         {
         }

@@ -28,10 +28,27 @@ namespace UserService.Controllers
             return UserRepository.GetUsers();
         }
 
+        [HttpGet("followers/{id}")] // GET /api/usercontroller/followers/xyz
+        public List<User> GetFollowers(int id)
+        {
+            return UserRepository.GetFollowers(id);
+        }
+        [HttpGet("followings/{id}")] // GET /api/usercontroller/followings/xyz
+        public List<User> GetFollowings(int id)
+        {
+            return UserRepository.GetFollowings(id);
+        }
+
         [HttpGet("{id}")]   // GET /api/usercontroller/xyz
-        public User GetProduct(string id)
+        public User GetSingleUser(int id)
         {
             return UserRepository.GetUser(id);
+        }
+
+        [HttpPut("{id}")]   // PUT /api/usercontroller/xyz
+        public User EditSingleUser(int id, User user)
+        {
+            return UserRepository.EditUser(id, user);
         }
     }
 }
