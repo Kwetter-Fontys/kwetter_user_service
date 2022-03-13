@@ -12,9 +12,6 @@ namespace UserService.Models
         public string? Website { get; set; }
         public string? Biography { get; set; }
 
-        public List<User>? Followers { get; set; }
-
-        public List<User>? Following { get; set; }
 
         public User(string firstName, string lastName)
         {

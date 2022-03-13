@@ -11,6 +11,7 @@ namespace UserService.DAL
             
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<FriendsLink> FriendsLinks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,8 +24,12 @@ namespace UserService.DAL
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasMany(e => e.Followers);
-                entity.HasMany(e => e.Following);
+            });
+            modelBuilder.Entity<FriendsLink>().ToTable("FriendsLink");
+            modelBuilder.Entity<FriendsLink>(entity =>
+            {
+                entity.HasOne<User>().WithMany().HasForeignKey(f => f.UserFollowerId);
+                entity.HasOne<User>().WithMany().HasForeignKey(f => f.UserFollowingId);
             });
         }
     }
