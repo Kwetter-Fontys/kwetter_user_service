@@ -11,7 +11,7 @@ namespace UserService.DAL
                 //return; //DB has been seeded already
             //}
 
-            // Creates the database if not exists, should only be used in production
+            // Drops and creates new database with filler code. Useful for now but should be done differently later.
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             //Add some users
