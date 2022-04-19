@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using UserService.Models;
 
 namespace UserService.Controllers
 {
+    [Authorize]
     [Route("api/usercontroller")]
     [ApiController]
     public class UserController
@@ -22,6 +24,7 @@ namespace UserService.Controllers
             UserRepository = useRepo;
         }
 
+        //Only admins
         [HttpGet] // GET /api/usercontroller
         public List<User> GetAllUsers()
         {
@@ -45,6 +48,7 @@ namespace UserService.Controllers
             return UserRepository.GetUser(id);
         }
 
+        //Only that user or admin
         [HttpPut("{id}")]   // PUT /api/usercontroller/xyz
         public User EditSingleUser(int id, User user)
         {
