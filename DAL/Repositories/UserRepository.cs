@@ -54,7 +54,7 @@ namespace UserService.DAL.Repositories
         {
             User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" };
             userContext.Add(user);
-            return user
+            return user;
         }
 
         public void DeleteUser(User user)
