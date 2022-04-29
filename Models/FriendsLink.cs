@@ -9,8 +9,8 @@ namespace UserService.Models
     public class FriendsLink
     {
         public int Id { get; set; }
-        public int UserFollowerId { get; set; }
+        public string UserFollowerId { get; set; }
 
-        public int UserFollowingId { get; set; }
+        public string UserFollowingId { get; set; }
     }
 }

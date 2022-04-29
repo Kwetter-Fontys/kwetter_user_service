@@ -18,7 +18,7 @@ namespace UserService.Controllers
     public class UserController
     {
 
-        IUserRepository UserRepository = null;
+        readonly IUserRepository UserRepository;
         public UserController(IUserRepository useRepo)
         {
             UserRepository = useRepo;
@@ -32,27 +32,27 @@ namespace UserService.Controllers
         }
 
         [HttpGet("followers/{id}")] // GET /api/usercontroller/followers/xyz
-        public List<User> GetFollowers(int id)
+        public List<User> GetFollowers(string id)
         {
             return UserRepository.GetFollowers(id);
         }
         [HttpGet("followings/{id}")] // GET /api/usercontroller/followings/xyz
-        public List<User> GetFollowings(int id)
+        public List<User> GetFollowings(string id)
         {
             return UserRepository.GetFollowings(id);
         }
 
         [HttpGet("{id}")]   // GET /api/usercontroller/xyz
-        public User GetSingleUser(int id)
+        public User GetSingleUser(string id)
         {
             return UserRepository.GetUser(id);
         }
 
         //Only that user or admin
         [HttpPut("{id}")]   // PUT /api/usercontroller/xyz
-        public User EditSingleUser(int id, User user)
+        public User EditSingleUser(User user)
         {
-            return UserRepository.EditUser(id, user);
+            return UserRepository.EditUser(user);
         }
     }
 }
