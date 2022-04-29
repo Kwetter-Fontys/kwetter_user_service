@@ -50,9 +50,11 @@ namespace UserService.DAL.Repositories
             return user;
         }
 
-        public void AddUser(User user)
+        public User CreateUser(string userTokenId)
         {
-            //Implemented later
+            User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" };
+            userContext.Add(user);
+            return user
         }
 
         public void DeleteUser(User user)

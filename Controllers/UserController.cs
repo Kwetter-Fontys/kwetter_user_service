@@ -42,7 +42,16 @@ namespace UserService.Controllers
         [HttpGet("{id}")]   // GET /api/usercontroller/xyz
         public User GetSingleUser(string id)
         {
-            return UserRepository.GetUser(id);
+            string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            if (id == userTokenId)
+            {
+                if (UserRepository.GetUser(id) == null)
+                {
+                    UserRepository.CreateUser(userTokenId);
+                }
+
+            }
+                return UserRepository.GetUser(id);
         }
 
         //Only that user or admin

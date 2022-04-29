@@ -15,5 +15,6 @@ namespace UserService.DAL.Repositories
         User GetUser(string id);
 
         User EditUser(string userTokenId, User user);
+        User CreateUser(string userTokenId);
     }
 }
