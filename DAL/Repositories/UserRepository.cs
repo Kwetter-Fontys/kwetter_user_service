@@ -39,11 +39,14 @@ namespace UserService.DAL.Repositories
            return userContext.Users.Find(id);
         }
 
-        public User EditUser(User user)
+        public User EditUser(string userTokenId, User user)
         {
             //Should add catches
-            userContext.Users.Update(user);
-            userContext.SaveChanges();
+            if (userTokenId == user.Id)
+            {
+                userContext.Users.Update(user);
+                userContext.SaveChanges();
+            }
             return user;
         }
 

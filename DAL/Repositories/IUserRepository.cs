@@ -14,6 +14,6 @@ namespace UserService.DAL.Repositories
         List<User> GetFollowings(string id);
         User GetUser(string id);
 
-        User EditUser(User user);
+        User EditUser(string userTokenId, User user);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using UserService.Models;
 using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore.Extensions;
 
 namespace UserService.DAL
 {

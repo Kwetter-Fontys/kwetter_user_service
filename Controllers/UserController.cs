@@ -1,32 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserService.DAL;
 using UserService.DAL.Repositories;
 using UserService.Models;
-
+using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace UserService.Controllers
 {
     [Authorize]
     [Route("api/usercontroller")]
     [ApiController]
-    public class UserController
+    public class UserController : ControllerBase
     {
-
+        JwtTokenHelper jwtTokenHelper;
         readonly IUserRepository UserRepository;
         public UserController(IUserRepository useRepo)
         {
+            jwtTokenHelper = new JwtTokenHelper();
             UserRepository = useRepo;
         }
 
         //Only admins
         [HttpGet] // GET /api/usercontroller
-        public List<User> GetAllUsers()
+        public List<User> GetAllUsersAsync()
         {
             return UserRepository.GetUsers();
         }
@@ -52,7 +49,8 @@ namespace UserService.Controllers
         [HttpPut("{id}")]   // PUT /api/usercontroller/xyz
         public User EditSingleUser(User user)
         {
-            return UserRepository.EditUser(user);
+            string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            return UserRepository.EditUser(userTokenId, user);
         }
     }
 }
