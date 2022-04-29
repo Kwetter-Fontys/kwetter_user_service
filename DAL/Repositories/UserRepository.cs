@@ -54,6 +54,7 @@ namespace UserService.DAL.Repositories
         {
             User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" };
             userContext.Add(user);
+            userContext.SaveChanges();
             return user;
         }
 
