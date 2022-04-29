@@ -27,6 +27,20 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloudUsers'
+        organization: 'kwetter-fontys'
+        scannerMode: 'MSBuild'
+        projectKey: 'Kwetter-Fontys_kwetter_user_service'
+        projectName: 'Kwetter user service'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
     - task: Docker@2
       inputs:
         containerRegistry: 'DockerHub'
