@@ -52,7 +52,7 @@ namespace UserService.DAL.Repositories
 
         public User CreateUser(string userTokenId)
         {
-            User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" };
+            User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" , Image = "./assets/randomPerson10.jpg" };
             userContext.Add(user);
             userContext.SaveChanges();
             return user;

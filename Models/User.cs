@@ -11,7 +11,7 @@ namespace UserService.Models
         public string? Location { get; set; }
         public string? Website { get; set; }
         public string? Biography { get; set; }
-
+        public string? Image { get; set; }
 
         public User(string firstName, string lastName)
         {
