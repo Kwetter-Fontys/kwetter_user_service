@@ -23,7 +23,7 @@ namespace UserService.Controllers
 
         //Only admins
         [HttpGet] // GET /api/usercontroller
-        public List<User> GetAllUsersAsync()
+        public List<User> GetAllUsers()
         {
             return UserRepository.GetUsers();
         }
@@ -60,6 +60,25 @@ namespace UserService.Controllers
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
             return UserRepository.EditUser(userTokenId, user);
+        }
+
+        //Only that user or admin
+        [HttpPut("follow/{userBeingFollowed}")]   // PUT /api/usercontroller/follow/xyz
+        public string FollowUser(string userBeingFollowed)
+        {
+            string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            UserRepository.FollowUser(userTokenId, userBeingFollowed);
+            return userBeingFollowed;
+        }
+
+        //Only that user or admin
+        [HttpPut("unfollow/{userBeingFollowed}")]   // PUT /api/usercontroller/unfollow/xyz
+        public string unFollowUser(string userBeingFollowed)
+        {
+            Console.WriteLine("yooooooooooooooooooooooooooooyoooooooooooooooooooooooooooooooooooooooooooooooooo");
+            string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            UserRepository.unFollowUser(userTokenId, userBeingFollowed);
+            return userBeingFollowed;
         }
     }
 }

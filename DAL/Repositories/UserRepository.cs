@@ -63,6 +63,23 @@ namespace UserService.DAL.Repositories
             //Implemented later
         }
 
+        public void FollowUser(string userWantingToFollow, string userBeingFollowed)
+        {
+            FriendsLink friendsLink = new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = userBeingFollowed };
+            var friendsLinkList = userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).ToList();
 
+            if (friendsLinkList.Count == 0)
+            {
+                 userContext.FriendsLinks.Add(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = userBeingFollowed });
+                 userContext.SaveChanges();
+            }
+        }
+
+        public void unFollowUser(string userWantingToFollow, string userBeingFollowed)
+        {
+            var friendsLink = userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).First();
+            userContext.FriendsLinks.Remove(friendsLink);
+            userContext.SaveChanges();
+        }
     }
 }

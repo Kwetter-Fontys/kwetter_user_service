@@ -16,5 +16,9 @@ namespace UserService.DAL.Repositories
 
         User EditUser(string userTokenId, User user);
         User CreateUser(string userTokenId);
+
+        public void FollowUser(string followId, string followedId);
+
+        public void unFollowUser(string followId, string followedId);
     }
 }
