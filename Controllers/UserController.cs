@@ -73,9 +73,8 @@ namespace UserService.Controllers
 
         //Only that user or admin
         [HttpPut("unfollow/{userBeingFollowed}")]   // PUT /api/usercontroller/unfollow/xyz
-        public string unFollowUser(string userBeingFollowed)
+        public string UnFollowUser(string userBeingFollowed)
         {
-            Console.WriteLine("yooooooooooooooooooooooooooooyoooooooooooooooooooooooooooooooooooooooooooooooooo");
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
             UserRepository.unFollowUser(userTokenId, userBeingFollowed);
             return userBeingFollowed;

@@ -69,7 +69,7 @@ if (builder.Environment.IsDevelopment())
 else
 {
     builder.Services.AddDbContext<UserContext>(options =>
-    options.UseMySQL("server=38.242.248.109;port=3306;database=kwetter;user=root;password=CEzmBKLB8?f5s!G7"));
+    options.UseMySQL("server=38.242.248.109;port=3309;database=kwetter;user=root;password=CEzmBKLB8?f5s!G7"));
 }
 
 builder.Services.AddControllers();
