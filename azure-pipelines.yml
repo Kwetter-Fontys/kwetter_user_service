@@ -19,14 +19,18 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
+- stage: Main
+  displayName: Setup build analyse and deploy
+  pool:
+    vmImage: windows-latest  
   jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
+  - job: Setup
+    displayName: Setup build analyse and deploy
     steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        feedsToUse: 'select'
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'SonarCloudUsers'
@@ -37,10 +41,25 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
+        projects: '**/*.csproj'
+        
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '''**/*.csproj'''
+        testRunTitle: 'All tests'
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
         pollingTimeoutSec: '300'
+        
+- stage: Deploy
+  pool:
+    vmImage: $(vmImageName)
+  jobs:
+  - job: Deploy
+    displayName: Deploy to docker
+    steps:
     - task: Docker@2
       inputs:
         containerRegistry: 'DockerHub'
