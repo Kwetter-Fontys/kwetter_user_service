@@ -29,7 +29,7 @@ namespace UserService.Services
         }
         public List<UserViewModel> GetAllFollowingsFromUser(string userId)
         {
-            return TransformToViewModelList(UserRepository.GetFollowers(userId));
+            return TransformToViewModelList(UserRepository.GetFollowings(userId));
         }
 
         public UserViewModel? GetSingleUser(string id, string userTokenId)
