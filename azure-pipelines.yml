@@ -46,13 +46,14 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        projects: '''**/*.csproj'''
+        projects: '**/*.csproj'
+        arguments: '--collect "Code Coverage"'
         testRunTitle: 'All tests'
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
         pollingTimeoutSec: '300'
-        
+
 - stage: Deploy
   pool:
     vmImage: $(vmImageName)
