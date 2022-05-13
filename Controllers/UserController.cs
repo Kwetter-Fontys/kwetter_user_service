@@ -5,6 +5,8 @@ using UserService.Models;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
+using UserService.Services;
+using UserService.ViewModels;
 
 namespace UserService.Controllers
 {
@@ -14,52 +16,45 @@ namespace UserService.Controllers
     public class UserController : ControllerBase
     {
         JwtTokenHelper jwtTokenHelper;
-        readonly IUserRepository UserRepository;
+        UserServiceClass userService;
+
         public UserController(IUserRepository useRepo)
         {
             jwtTokenHelper = new JwtTokenHelper();
-            UserRepository = useRepo;
+            userService = new UserServiceClass(useRepo);
         }
-
-        //Only admins
+  
         [HttpGet] // GET /api/usercontroller
-        public List<User> GetAllUsers()
+        public List<UserViewModel> GetAllUsers()
         {
-            return UserRepository.GetUsers();
+            return userService.GetAllUsers();
         }
 
         [HttpGet("followers/{id}")] // GET /api/usercontroller/followers/xyz
-        public List<User> GetFollowers(string id)
+        public List<UserViewModel> GetFollowers(string userid)
         {
-            return UserRepository.GetFollowers(id);
+            return userService.GetAllFollowersFromUser(userid);
         }
         [HttpGet("followings/{id}")] // GET /api/usercontroller/followings/xyz
-        public List<User> GetFollowings(string id)
+        public List<UserViewModel> GetFollowings(string userid)
         {
-            return UserRepository.GetFollowings(id);
+            return userService.GetAllFollowingsFromUser(userid);
         }
 
         [HttpGet("{id}")]   // GET /api/usercontroller/xyz
-        public User GetSingleUser(string id)
+        public UserViewModel? GetSingleUser(string userid)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            if (id == userTokenId)
-            {
-                if (UserRepository.GetUser(id) == null)
-                {
-                    UserRepository.CreateUser(userTokenId);
-                }
-
-            }
-                return UserRepository.GetUser(id);
+            return userService.GetSingleUser(userid, userTokenId);
         }
 
         //Only that user or admin
         [HttpPut("{id}")]   // PUT /api/usercontroller/xyz
-        public User EditSingleUser(User user)
+        //Maybe change parameter to view model too.
+        public UserViewModel EditSingleUser(User user)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            return UserRepository.EditUser(userTokenId, user);
+            return userService.EditSingleUser(userTokenId, user);
         }
 
         //Only that user or admin
@@ -67,8 +62,7 @@ namespace UserService.Controllers
         public string FollowUser(string userBeingFollowed)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            UserRepository.FollowUser(userTokenId, userBeingFollowed);
-            return userBeingFollowed;
+            return userService.FollowUser(userBeingFollowed, userTokenId);
         }
 
         //Only that user or admin
@@ -76,8 +70,7 @@ namespace UserService.Controllers
         public string UnFollowUser(string userBeingFollowed)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            UserRepository.unFollowUser(userTokenId, userBeingFollowed);
-            return userBeingFollowed;
+            return userService.UnFollowUser(userBeingFollowed, userTokenId);
         }
     }
 }

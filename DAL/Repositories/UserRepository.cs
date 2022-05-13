@@ -34,25 +34,20 @@ namespace UserService.DAL.Repositories
             return userContext.Users.Where(u => followingIds.Contains(u.Id)).ToList();
         }
 
-        public User GetUser(string id)
+        public User? FindUser(string id)
         {
            return userContext.Users.Find(id);
         }
 
-        public User EditUser(string userTokenId, User user)
+        public User EditUser(User user)
         {
-            //Should add catches
-            if (userTokenId == user.Id)
-            {
-                userContext.Users.Update(user);
-                userContext.SaveChanges();
-            }
+            userContext.Users.Update(user);
+            userContext.SaveChanges();
             return user;
         }
 
-        public User CreateUser(string userTokenId)
+        public User CreateUser(User user)
         {
-            User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "" , Image = "./assets/randomPerson10.jpg" };
             userContext.Add(user);
             userContext.SaveChanges();
             return user;
@@ -63,21 +58,19 @@ namespace UserService.DAL.Repositories
             //Implemented later
         }
 
-        public void FollowUser(string userWantingToFollow, string userBeingFollowed)
+        public FriendsLink? FindFollower(string userWantingToFollow, string userBeingFollowed)
         {
-            FriendsLink friendsLink = new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = userBeingFollowed };
-            var friendsLinkList = userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).ToList();
-
-            if (friendsLinkList.Count == 0)
-            {
-                 userContext.FriendsLinks.Add(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = userBeingFollowed });
-                 userContext.SaveChanges();
-            }
+            return userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).First();
         }
 
-        public void unFollowUser(string userWantingToFollow, string userBeingFollowed)
+        public void FollowUser(FriendsLink friendsLink)
         {
-            var friendsLink = userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).First();
+             userContext.FriendsLinks.Add(friendsLink);
+             userContext.SaveChanges();
+        }
+
+        public void UnFollowUser(FriendsLink friendsLink)
+        {
             userContext.FriendsLinks.Remove(friendsLink);
             userContext.SaveChanges();
         }

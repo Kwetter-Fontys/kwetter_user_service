@@ -12,13 +12,15 @@ namespace UserService.DAL.Repositories
         List<User> GetUsers();
         List<User> GetFollowers(string id);
         List<User> GetFollowings(string id);
-        User GetUser(string id);
+        User? FindUser(string id);
 
-        User EditUser(string userTokenId, User user);
-        User CreateUser(string userTokenId);
+        User EditUser(User user);
+        User CreateUser(User user);
 
-        public void FollowUser(string followId, string followedId);
+        FriendsLink? FindFollower(string userWantingToFollow, string userBeingFollowed);
 
-        public void unFollowUser(string followId, string followedId);
+        public void FollowUser(FriendsLink friendsLink);
+
+        public void UnFollowUser(FriendsLink friendsLink);
     }
 }
