@@ -12,19 +12,21 @@ namespace UserTests
         public string MainUserId = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9";
         public string FakeUserId = "000";
         public List<UserViewModel> UserList;
-        public User ExistingUser = 
+        public User ExistingUser =
             new User("sebas", "bakker")
-        {
-            Id = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9",
-            Biography = "Student at Fontys Hogeschool Eindhoven. Creator of Kwetter and everything else.",
-            Location = "Amsterdam",
-            Website = " www.kwetter.nl",
-            Image = "./assets/test.jpg"
-        };
+            {
+                Id = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9",
+                Biography = "Student at Fontys Hogeschool Eindhoven. Creator of Kwetter and everything else.",
+                Location = "Amsterdam",
+                Website = " www.kwetter.nl",
+                Image = "./assets/test.jpg"
+            };
 
         //Used when no modifications are needed.
         public UserServiceClass ExistingService = new UserServiceClass(new MockUserRepository());
 
+
+        //Get all users tests
         [TestMethod]
         public void GetAllExistingUsers()
         {
@@ -32,6 +34,7 @@ namespace UserTests
             Assert.AreEqual(7, UserList.Count, "List count is not equal, when it should be");
         }
 
+        //Get followers tests
         [TestMethod]
         public void GetAllFollowersFromExistingUser()
         {
@@ -46,6 +49,7 @@ namespace UserTests
             Assert.AreEqual(0, UserList.Count, "List count is equal, when it should be");
         }
 
+        //Get following tests
         [TestMethod]
         public void GetAllFollowingsFromExistingUser()
         {
@@ -60,6 +64,7 @@ namespace UserTests
             Assert.AreEqual(0, UserList.Count, "List count is equal, when it should be");
         }
 
+        //Get single user tests
         [TestMethod]
         public void FindExistingUser()
         {
@@ -86,20 +91,170 @@ namespace UserTests
             Assert.AreEqual(null, user, "User was found when it should be null");
         }
 
+
+        //Edit user tests
         [TestMethod]
         public void EditExistingUserWithCorrectToken()
         {
             UserServiceClass newService = new UserServiceClass(new MockUserRepository());
-            UserViewModel? user = newService.EditSingleUser(MainUserId, new User("test", "test") { Id = MainUserId});
+            UserViewModel? editedUser = newService.EditSingleUser(MainUserId, new User("test", "test") { Id = MainUserId });
+            UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
 
-            Assert.AreEqual(ExistingUser.Id, user.Id, "User ids weren't equal when they should be");
-            Assert.AreNotEqual(ExistingUser.FirstName, user.FirstName, "User names were equal when they shouldnt be");
+            Assert.AreEqual(originalUser.Id, editedUser.Id, "User ids weren't equal when they should be");
+            Assert.AreEqual(originalUser.FirstName, editedUser.FirstName, "User names weren't equal when they should be");
         }
 
-        //IDK AT THE MOMENT
         [TestMethod]
-        public void EditExistingUserWithInCorrectToken()
+        public void EditExistingUserWithIncorrectToken()
         {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = MainUserId });
+
+            UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
+
+            Assert.AreEqual(originalUser.Id, editedUser.Id, "User ids weren't equal when they should be");
+            Assert.AreNotEqual(originalUser.FirstName, editedUser.FirstName, "User names were equal when they shouldnt be");
+
+        }
+
+        [TestMethod]
+        public void EditNonExistingUserWithCorrectToken()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = "NonExistant" });
+            UserViewModel? originalUser = newService.GetSingleUser("NonExistant", "NonExistant2");
+
+            Assert.AreEqual(null, originalUser, "User was found when there shouldnt be a user");
+
+        }
+
+        [TestMethod]
+        public void EditNonExistingUserWithIncorrectToken()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = MainUserId });
+            UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
+
+            Assert.AreEqual(originalUser.Id, editedUser.Id, "User ids weren't equal when they should be");
+            Assert.AreNotEqual(originalUser.FirstName, editedUser.FirstName, "User names were equal when they shouldnt be");
+
+        }
+
+        //Follow users tests
+        [TestMethod]
+        public void FollowUserWithCorrectTokens()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.FollowUser("5", "4");
+
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreEqual(3, UserList.Count, "List count is not equal, when it should be");
+        }
+
+        [TestMethod]
+        public void FollowUserWithInorrectFollowToken()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.FollowUser("NonExistant", "4");
+
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreNotEqual(3, UserList.Count, "List count is equal, when it shouldn't be");
+        }
+
+        [TestMethod]
+        public void FollowNonExistingUser()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.FollowUser("5", "Nonexistant");
+
+            UserList = newService.GetAllFollowersFromUser("Nonexistant");
+            Assert.AreEqual(0, UserList.Count, "List count is not 0, when it should be");
+        }
+
+        [TestMethod]
+        public void FollowSameUserTwice()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.FollowUser("5", "4");
+            newService.FollowUser("5", "4");
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreEqual(3, UserList.Count, "List count is not equal, when it should be");
+        }
+
+        [TestMethod]
+        public void FollowSelf()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.FollowUser("4", "4");
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreNotEqual(3, UserList.Count, "List count is equal, when it shouldn't be");
+        }
+
+        [TestMethod]
+        public void UnfollowWithCorrectTokens()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.UnFollowUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", "4");
+
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreEqual(1, UserList.Count, "List count is not equal, when it should be");
+        }
+
+        [TestMethod]
+        public void UnfollowExistingUserWithNonexistingUser()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.UnFollowUser("NonExistant", "4");
+
+            UserList = newService.GetAllFollowersFromUser("4");
+            Assert.AreNotEqual(1, UserList.Count, "List count is equal, when it shouldn't be");
+        }
+
+        [TestMethod]
+        public void UnfollowNonExistingUserWithExistingUser()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            newService.UnFollowUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", "Nonexistant");
+
+            UserList = newService.GetAllFollowingsFromUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9");
+            Assert.AreEqual(3, UserList.Count, "List count is not equal, when it should be");
+        }
+
+        //Create user
+        [TestMethod]
+        public void CreateNewUserWithNonexistingId()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserViewModel user = newService.CreateUser("NonExistant");
+            UserList = newService.GetAllUsers();
+            Assert.AreEqual(8, UserList.Count, "User wasn't sucesfully added to the list of users");
+            Assert.AreEqual("NonExistant", user.Id, "User wasn't correctly created");
+        }
+
+        [TestMethod]
+        public void CreateNewUserWithExistingId()
+        {
+            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserViewModel user = newService.CreateUser("4");
+            UserList = newService.GetAllUsers();
+            Assert.AreEqual(7, UserList.Count, "User was sucesfully added to the list of users when it shouldn't have");
+            Assert.AreEqual(null, user.Id, "User was sucesfully created when it shouldn't have");
+        }
+
+        //Testing transform view model method
+        [TestMethod]
+        public void TransformToViewModelCorrectlyTransformsAUser()
+        {
+            UserViewModel userVm = ExistingService.TransformToViewModel(ExistingUser);
+            Assert.AreEqual(ExistingUser.Biography, userVm.Biography, "User was not correctly transformed");
+        }
+
+        [TestMethod]
+        public void TransformToViewModelListCorrectlyTransformsAListOfUser()
+        {
+            List<User> usersList = new List<User>() { ExistingUser };
+            List<UserViewModel> userVm = ExistingService.TransformToViewModelList(usersList);
+            Assert.AreEqual(usersList.Count, userVm.Count, "Userlist was not correctly transformed");
         }
     }
 }

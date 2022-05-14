@@ -58,11 +58,11 @@ namespace UserService.Controllers
         }
 
         //Only that user or admin
-        [HttpPut("follow/{userBeingFollowed}")]   // PUT /api/usercontroller/follow/xyz
-        public string FollowUser(string userBeingFollowed)
+        [HttpPut("follow/{followedUser}")]   // PUT /api/usercontroller/follow/xyz
+        public string FollowUser(string followedUser)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            return userService.FollowUser(userBeingFollowed, userTokenId);
+            return userService.FollowUser(userTokenId, followedUser);
         }
 
         //Only that user or admin

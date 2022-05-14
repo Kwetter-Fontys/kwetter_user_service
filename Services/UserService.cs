@@ -56,35 +56,47 @@ namespace UserService.Services
         {
             if (userTokenId == user.Id)
             {
-                return TransformToViewModel(UserRepository.EditUser(user));
+                if (UserRepository.FindUser(user.Id) != null)
+                {
+                    return TransformToViewModel(UserRepository.EditUser(user));
+                }
             }
             return TransformToViewModel(user);
         }
 
-        public string FollowUser(string userBeingFollowed, string userTokenId)
+        public string FollowUser(string userWantingToFollow, string followedUser)
         {
-            FriendsLink? friend = UserRepository.FindFollower(userTokenId, userBeingFollowed);
-            if (friend == null)
+            //Check if users exist and aren't the same
+            if (userWantingToFollow != followedUser && UserRepository.FindUser(userWantingToFollow) != null && UserRepository.FindUser(followedUser) != null)
             {
-                UserRepository.FollowUser(new FriendsLink(){ UserFollowerId = userBeingFollowed, UserFollowingId = userTokenId });
+                FriendsLink? friend = UserRepository.FindFollower(followedUser, userWantingToFollow);
+                if (friend == null)
+                {
+                    UserRepository.FollowUser(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = followedUser });
+                    return "User followed";
+                }
             }
-            return userBeingFollowed;
+            return "Placeholder error";
         }
 
-        public string UnFollowUser(string userBeingFollowed, string userTokenId)
+        public string UnFollowUser(string userWantingToUnfollow, string userTokenId)
         {
-            FriendsLink? friend = UserRepository.FindFollower(userTokenId, userBeingFollowed);
+            FriendsLink? friend = UserRepository.FindFollower(userWantingToUnfollow, userTokenId);
             if (friend != null)
             {
                 UserRepository.UnFollowUser(friend);
             }
-            return userBeingFollowed;
+            return userWantingToUnfollow;
         }
 
         public UserViewModel CreateUser(string userTokenId)
         {
-            User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/randomPerson10.jpg" };
-            return TransformToViewModel(UserRepository.CreateUser(user));
+            if (UserRepository.FindUser(userTokenId) == null && userTokenId != null)
+            {
+                User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/randomPerson10.jpg" };
+                return TransformToViewModel(UserRepository.CreateUser(user));
+            }
+            return new UserViewModel();
         }
 
         public UserViewModel TransformToViewModel(User user)

@@ -75,7 +75,7 @@ namespace UserTests
 
         public FriendsLink? FindFollower(string userWantingToFollow, string userBeingFollowed)
         {
-            return friendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).First();
+            return friendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).FirstOrDefault();
         }
 
         public void FollowUser(FriendsLink friendsLink)
