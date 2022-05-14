@@ -39,8 +39,11 @@ namespace UserService.DAL.Repositories
            return userContext.Users.Find(id);
         }
 
+
         public User EditUser(User user)
         {
+            //Cant track multiple enities
+            userContext.ChangeTracker.Clear();
             userContext.Users.Update(user);
             userContext.SaveChanges();
             return user;
@@ -58,10 +61,14 @@ namespace UserService.DAL.Repositories
             //Implemented later
         }
 
-        public FriendsLink? FindFollower(string userWantingToFollow, string userBeingFollowed)
+        //Follow "2" , "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9"
+
+        //Unfollow "3", "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9"
+        public FriendsLink? FindFollower(string follower, string followed)
         {
-            return userContext.FriendsLinks.Where(friends => friends.UserFollowerId == userWantingToFollow && friends.UserFollowingId == userBeingFollowed).First();
+            return userContext.FriendsLinks.Where(friends => friends.UserFollowerId == follower && friends.UserFollowingId == followed).FirstOrDefault();
         }
+
 
         public void FollowUser(FriendsLink friendsLink)
         {

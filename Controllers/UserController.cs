@@ -30,18 +30,18 @@ namespace UserService.Controllers
             return userService.GetAllUsers();
         }
 
-        [HttpGet("followers/{id}")] // GET /api/usercontroller/followers/xyz
+        [HttpGet("followers/{userid}")] // GET /api/usercontroller/followers/xyz
         public List<UserViewModel> GetFollowers(string userid)
         {
             return userService.GetAllFollowersFromUser(userid);
         }
-        [HttpGet("followings/{id}")] // GET /api/usercontroller/followings/xyz
+        [HttpGet("followings/{userid}")] // GET /api/usercontroller/followings/xyz
         public List<UserViewModel> GetFollowings(string userid)
         {
             return userService.GetAllFollowingsFromUser(userid);
         }
 
-        [HttpGet("{id}")]   // GET /api/usercontroller/xyz
+        [HttpGet("{userid}")]   // GET /api/usercontroller/xyz
         public UserViewModel? GetSingleUser(string userid)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
@@ -70,7 +70,7 @@ namespace UserService.Controllers
         public string UnFollowUser(string userBeingFollowed)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            return userService.UnFollowUser(userBeingFollowed, userTokenId);
+            return userService.UnFollowUser(userTokenId, userBeingFollowed);
         }
     }
 }

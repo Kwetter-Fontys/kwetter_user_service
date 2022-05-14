@@ -69,29 +69,31 @@ namespace UserService.Services
             //Check if users exist and aren't the same
             if (userWantingToFollow != followedUser && UserRepository.FindUser(userWantingToFollow) != null && UserRepository.FindUser(followedUser) != null)
             {
-                FriendsLink? friend = UserRepository.FindFollower(followedUser, userWantingToFollow);
+                FriendsLink? friend = UserRepository.FindFollower(userWantingToFollow, followedUser);
                 if (friend == null)
                 {
                     UserRepository.FollowUser(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = followedUser });
-                    return "User followed";
+                    return "Followed user";
                 }
+                return "Person is already followed";
             }
-            return "Placeholder error";
+            return "Person doesn't exist or is the same user";
         }
 
-        public string UnFollowUser(string userWantingToUnfollow, string userTokenId)
+        public string UnFollowUser(string userWantingToUnfollow, string followedUser)
         {
-            FriendsLink? friend = UserRepository.FindFollower(userWantingToUnfollow, userTokenId);
+            FriendsLink? friend = UserRepository.FindFollower(userWantingToUnfollow, followedUser);
             if (friend != null)
             {
                 UserRepository.UnFollowUser(friend);
+                return "Person unfollowed";
             }
-            return userWantingToUnfollow;
+            return "Person doesn't exist or is not followed";
         }
 
         public UserViewModel CreateUser(string userTokenId)
         {
-            if (UserRepository.FindUser(userTokenId) == null && userTokenId != null)
+            if (UserRepository.FindUser(userTokenId) == null)
             {
                 User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/randomPerson10.jpg" };
                 return TransformToViewModel(UserRepository.CreateUser(user));
