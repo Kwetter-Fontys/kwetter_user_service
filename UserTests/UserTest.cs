@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using UserService.Models;
 using UserService.Services;
@@ -23,8 +25,21 @@ namespace UserTests
             };
 
         //Used when no modifications are needed.
-        public UserServiceClass ExistingService = new UserServiceClass(new MockUserRepository());
+        public UserServiceClass ExistingService;
+        public ILogger<UserServiceClass> logger;
 
+        public UserTest()
+        {
+            var mock = new Mock<ILogger<UserServiceClass>>();
+            logger = mock.Object;
+            ExistingService = new UserServiceClass(new MockUserRepository(), logger);
+        }
+
+        public UserServiceClass CreateNewService()
+        {
+            UserServiceClass newSerivce = new UserServiceClass(new MockUserRepository(), logger);
+            return newSerivce;
+        }
 
         //Get all users tests
         [TestMethod]
@@ -76,7 +91,7 @@ namespace UserTests
         [TestMethod]
         public void FindNonExistingUserWithMathingIdAndUserTokenId()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             //This also creates a user at the moment so will fail when RabbitMQ is added.
             UserViewModel? user = newService.GetSingleUser("NonExistant", "NonExistant");
 
@@ -96,7 +111,7 @@ namespace UserTests
         [TestMethod]
         public void EditExistingUserWithCorrectToken()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel? editedUser = newService.EditSingleUser(MainUserId, new User("test", "test") { Id = MainUserId });
             UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
 
@@ -107,7 +122,7 @@ namespace UserTests
         [TestMethod]
         public void EditExistingUserWithIncorrectToken()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = MainUserId });
 
             UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
@@ -120,7 +135,7 @@ namespace UserTests
         [TestMethod]
         public void EditNonExistingUserWithCorrectToken()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = "NonExistant" });
             UserViewModel? originalUser = newService.GetSingleUser("NonExistant", "NonExistant2");
 
@@ -131,7 +146,7 @@ namespace UserTests
         [TestMethod]
         public void EditNonExistingUserWithIncorrectToken()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = MainUserId });
             UserViewModel? originalUser = newService.GetSingleUser(MainUserId, MainUserId);
 
@@ -144,7 +159,7 @@ namespace UserTests
         [TestMethod]
         public void FollowUserWithCorrectTokens()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.FollowUser("5", "4");
 
             UserList = newService.GetAllFollowersFromUser("4");
@@ -154,7 +169,7 @@ namespace UserTests
         [TestMethod]
         public void FollowUserWithInorrectFollowToken()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.FollowUser("NonExistant", "4");
 
             UserList = newService.GetAllFollowersFromUser("4");
@@ -164,7 +179,7 @@ namespace UserTests
         [TestMethod]
         public void FollowNonExistingUser()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.FollowUser("5", "Nonexistant");
 
             UserList = newService.GetAllFollowersFromUser("Nonexistant");
@@ -174,7 +189,7 @@ namespace UserTests
         [TestMethod]
         public void FollowSameUserTwice()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.FollowUser("5", "4");
             newService.FollowUser("5", "4");
             UserList = newService.GetAllFollowersFromUser("4");
@@ -184,7 +199,7 @@ namespace UserTests
         [TestMethod]
         public void FollowSelf()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.FollowUser("4", "4");
             UserList = newService.GetAllFollowersFromUser("4");
             Assert.AreNotEqual(3, UserList.Count, "List count is equal, when it shouldn't be");
@@ -193,7 +208,7 @@ namespace UserTests
         [TestMethod]
         public void UnfollowWithCorrectTokens()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.UnFollowUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", "4");
 
             UserList = newService.GetAllFollowersFromUser("4");
@@ -203,7 +218,7 @@ namespace UserTests
         [TestMethod]
         public void UnfollowExistingUserWithNonexistingUser()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.UnFollowUser("NonExistant", "4");
 
             UserList = newService.GetAllFollowersFromUser("4");
@@ -213,7 +228,7 @@ namespace UserTests
         [TestMethod]
         public void UnfollowNonExistingUserWithExistingUser()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             newService.UnFollowUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", "Nonexistant");
 
             UserList = newService.GetAllFollowingsFromUser("7cc35fc6-0eaf-4df8-aaef-773077b4f3c9");
@@ -224,7 +239,7 @@ namespace UserTests
         [TestMethod]
         public void CreateNewUserWithNonexistingId()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel user = newService.CreateUser("NonExistant");
             UserList = newService.GetAllUsers();
             Assert.AreEqual(8, UserList.Count, "User wasn't sucesfully added to the list of users");
@@ -234,7 +249,7 @@ namespace UserTests
         [TestMethod]
         public void CreateNewUserWithExistingId()
         {
-            UserServiceClass newService = new UserServiceClass(new MockUserRepository());
+            UserServiceClass newService = CreateNewService();
             UserViewModel user = newService.CreateUser("4");
             UserList = newService.GetAllUsers();
             Assert.AreEqual(7, UserList.Count, "User was sucesfully added to the list of users when it shouldn't have");

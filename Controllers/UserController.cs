@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using UserService.Services;
 using UserService.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace UserService.Controllers
 {
@@ -18,10 +19,10 @@ namespace UserService.Controllers
         JwtTokenHelper jwtTokenHelper;
         UserServiceClass userService;
 
-        public UserController(IUserRepository useRepo)
+        public UserController(IUserRepository useRepo, ILogger<UserServiceClass> logger)
         {
             jwtTokenHelper = new JwtTokenHelper();
-            userService = new UserServiceClass(useRepo);
+            userService = new UserServiceClass(useRepo, logger);
         }
   
         [HttpGet] // GET /api/usercontroller

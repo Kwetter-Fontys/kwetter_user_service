@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
 using UserService.DAL.Repositories;
 using UserService.Models;
 using UserService.ViewModels;
@@ -12,24 +8,47 @@ namespace UserService.Services
     public class UserServiceClass
     {
         IUserRepository UserRepository;
+        private readonly ILogger _logger;
 
-        public UserServiceClass(IUserRepository userRepo)
+        public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger)
         {
+            _logger = logger;
             UserRepository = userRepo;
         }
 
         public List<UserViewModel> GetAllUsers()
         {
+            _logger.LogInformation("Succesfully gotten all users");
             return TransformToViewModelList(UserRepository.GetUsers());
         }
 
         public List<UserViewModel> GetAllFollowersFromUser(string userId)
         {
-            return TransformToViewModelList(UserRepository.GetFollowers(userId));
+            List<User> followers = UserRepository.GetFollowers(userId);
+            //Check if empty
+            if (!followers.Any())
+            {
+                _logger.LogWarning("List of empty followers was gotten from user: " + userId);
+            }
+            else
+            {
+                _logger.LogInformation("List of " + followers.Count.ToString() + " followers was gotten from user: " + userId);
+            }
+            return TransformToViewModelList(followers);
         }
         public List<UserViewModel> GetAllFollowingsFromUser(string userId)
         {
-            return TransformToViewModelList(UserRepository.GetFollowings(userId));
+            List<User> followings = UserRepository.GetFollowings(userId);
+            //Check if empty
+            if (!followings.Any())
+            {
+                _logger.LogWarning("List of empty followings was gotten from user: " + userId);
+            }
+            else
+            {
+                _logger.LogInformation("List of " + followings.Count.ToString() + " followings was gotten from user: " + userId);
+            }
+            return TransformToViewModelList(followings);
         }
 
         public UserViewModel? GetSingleUser(string id, string userTokenId)
@@ -46,8 +65,10 @@ namespace UserService.Services
             User? user = UserRepository.FindUser(id);
             if (user == null)
             {
+                _logger.LogWarning("User with id: " + id + " was not found");
                 return null;
             }
+            _logger.LogInformation("User with id: " + id + " was found");
             return TransformToViewModel(user);
            
         }
@@ -58,8 +79,17 @@ namespace UserService.Services
             {
                 if (UserRepository.FindUser(user.Id) != null)
                 {
+                    _logger.LogInformation("User with id: " + userTokenId + " was edited");
                     return TransformToViewModel(UserRepository.EditUser(user));
                 }
+                else
+                {
+                    _logger.LogWarning("User with id: " + userTokenId + " not found");
+                }
+            }
+            else
+            {
+                _logger.LogWarning("User: " + userTokenId + " tried to edit and impersonate user: " + user.Id);
             }
             return TransformToViewModel(user);
         }
@@ -73,11 +103,15 @@ namespace UserService.Services
                 if (friend == null)
                 {
                     UserRepository.FollowUser(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = followedUser });
+                    _logger.LogInformation("User: {userWantingToFollow} followed user: {followedUser}", userWantingToFollow, followedUser);
                     return "Followed user";
                 }
+                _logger.LogWarning("User: {userWantingToFollow} already follows user: {followedUser}", userWantingToFollow, followedUser);
                 return "Person is already followed";
             }
-            return "Person doesn't exist or is the same user";
+            _logger.LogWarning("User: {userWantingToFollow} doesn't exist, or is user: {followedUser}", userWantingToFollow, followedUser);
+            return "{string: 'test'}";
+            //return "Person doesn't exist or is the same user";
         }
 
         public string UnFollowUser(string userWantingToUnfollow, string followedUser)
@@ -86,9 +120,12 @@ namespace UserService.Services
             if (friend != null)
             {
                 UserRepository.UnFollowUser(friend);
+                _logger.LogInformation("User: {userWantingToUnfollow} unfollowed user: {followedUser}", userWantingToUnfollow, followedUser);
                 return "Person unfollowed";
             }
-            return "Person doesn't exist or is not followed";
+            _logger.LogWarning("User: {userWantingToUnfollow} doesn't exist, or doesn't follow user: {followedUser}", userWantingToUnfollow, followedUser);
+            return "{string: 'test'}";
+            //return "Person doesn't exist or is not followed";
         }
 
         public UserViewModel CreateUser(string userTokenId)
@@ -96,8 +133,10 @@ namespace UserService.Services
             if (UserRepository.FindUser(userTokenId) == null)
             {
                 User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/randomPerson10.jpg" };
+                _logger.LogInformation("User: {userTokenId} succesfully created", userTokenId);
                 return TransformToViewModel(UserRepository.CreateUser(user));
             }
+            _logger.LogWarning("User: {userTokenId} already exists", userTokenId);
             return new UserViewModel();
         }
 
