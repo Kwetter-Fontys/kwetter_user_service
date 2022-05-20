@@ -12,12 +12,10 @@ using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.Logging.AddConsole().SetMinimumLevel(LogLevel.Information);
 var logger = LoggerFactory.Create(config =>
 {
-    config.AddConsole();
     config.AddConfiguration(builder.Configuration.GetSection("Logging"));
-    config.SetMinimumLevel(LogLevel.Warning);
 }).CreateLogger("Program");
 
 
