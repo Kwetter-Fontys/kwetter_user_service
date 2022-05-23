@@ -12,11 +12,12 @@ namespace UserService.Services
     {
         IUserRepository UserRepository;
         private readonly ILogger _logger;
-
-        public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger)
+        private readonly IMessageSender messageSender;
+        public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger, IMessageSender mSender)
         {
             _logger = logger;
             UserRepository = userRepo;
+            messageSender = mSender;
         }
 
         public List<UserViewModel> GetAllUsers()
@@ -183,27 +184,8 @@ namespace UserService.Services
 
         public void DeleteTweetsFromUser(string userTokenId)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "38.242.248.109",
-                UserName = "guest",
-                Password = "pi4snc7kpg#77Q#F"
-
-            };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "hello2", durable: false, exclusive: false, autoDelete: false, arguments: null);
-
-                string message = "Hello World!";
-                var body = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(exchange: "", routingKey: "hello", basicProperties: null, body: body);
-                Console.WriteLine(" [x] Sent {0}", message);
-            }
-
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+            //Calls rabbitMQ
+            messageSender.SendMessage(userTokenId);
         }
     }
 }

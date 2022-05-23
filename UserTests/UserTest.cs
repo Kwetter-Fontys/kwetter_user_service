@@ -27,17 +27,20 @@ namespace UserTests
         //Used when no modifications are needed.
         public UserServiceClass ExistingService;
         public ILogger<UserServiceClass> logger;
+        public IMessageSender rabbitMQ;
 
         public UserTest()
         {
             var mock = new Mock<ILogger<UserServiceClass>>();
             logger = mock.Object;
-            ExistingService = new UserServiceClass(new MockUserRepository(), logger);
+            var mock2 = new Mock<IMessageSender>();
+            rabbitMQ = mock2.Object;
+            ExistingService = new UserServiceClass(new MockUserRepository(), logger, rabbitMQ);
         }
 
         public UserServiceClass CreateNewService()
         {
-            UserServiceClass newSerivce = new UserServiceClass(new MockUserRepository(), logger);
+            UserServiceClass newSerivce = new UserServiceClass(new MockUserRepository(), logger, rabbitMQ);
             return newSerivce;
         }
 
