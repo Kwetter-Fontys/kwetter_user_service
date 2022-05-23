@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -107,6 +109,5 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
     UserInitializer.Initialize(context);
 }
-
 
 app.Run();

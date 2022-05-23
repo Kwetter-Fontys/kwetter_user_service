@@ -59,6 +59,17 @@ namespace UserService.Controllers
         }
 
         //Only that user or admin
+        [HttpDelete("{id}")]   // PUT /api/usercontroller/xyz
+        //Maybe change parameter to view model too.
+        public string DeleteUser (User user)
+        {
+            string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            userService.DeleteUser(userTokenId, user);
+            return "User deleted";
+        }
+
+
+        //Only that user or admin
         [HttpPut("follow/{followedUser}")]   // PUT /api/usercontroller/follow/xyz
         public string FollowUser(string followedUser)
         {

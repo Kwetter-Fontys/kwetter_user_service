@@ -137,9 +137,9 @@ namespace UserTests
         {
             UserServiceClass newService = CreateNewService();
             UserViewModel? editedUser = newService.EditSingleUser("NonExistant", new User("test", "test") { Id = "NonExistant" });
-            UserViewModel? originalUser = newService.GetSingleUser("NonExistant", "NonExistant2");
+            UserViewModel? originalUser = newService.GetSingleUser("NonExistant", "NonExistant");
 
-            Assert.AreEqual(null, originalUser, "User was found when there shouldnt be a user");
+            Assert.AreEqual("", originalUser.FirstName, "User was found when there shouldnt be a user");
 
         }
 
@@ -270,6 +270,47 @@ namespace UserTests
             List<User> usersList = new List<User>() { ExistingUser };
             List<UserViewModel> userVm = ExistingService.TransformToViewModelList(usersList);
             Assert.AreEqual(usersList.Count, userVm.Count, "Userlist was not correctly transformed");
+        }
+
+
+        //Delete user tests
+        [TestMethod]
+        public void DeleteExistingUserWithCorrectToken()
+        {
+            UserServiceClass newService = CreateNewService();
+            newService.DeleteUser(MainUserId, ExistingUser);
+            UserViewModel? deletedUser = newService.GetSingleUser(MainUserId, MainUserId);
+            Assert.AreEqual("", deletedUser.FirstName, "User wasn't correctly deleted");
+        }
+
+        [TestMethod]
+        public void DeleteExistingUserWithIncorrectToken()
+        {
+            UserServiceClass newService = CreateNewService();
+            newService.DeleteUser("", ExistingUser);
+            UserViewModel? deletedUser = newService.GetSingleUser(MainUserId, MainUserId);
+            Assert.AreEqual(ExistingUser.FirstName, deletedUser.FirstName, "User was deleted when it shouldn't be");
+
+        }
+
+        [TestMethod]
+        public void DeleteNonExistingUserWithCorrectToken()
+        {
+            UserServiceClass newService = CreateNewService();
+            newService.DeleteUser("NonExistant", new User("test", "test") { Id = "NonExistant" });
+            UserViewModel? deletedUser = newService.GetSingleUser("NonExistant", "NonExistant");
+            Assert.AreEqual("", deletedUser.FirstName, "User was found when there shouldnt be a user");
+
+        }
+
+        [TestMethod]
+        public void DeleteNonExistingUserWithIncorrectToken()
+        {
+            UserServiceClass newService = CreateNewService();
+            newService.DeleteUser("NonExistant", new User("test", "test") { Id = "NonExistant2" });
+            UserViewModel? deletedUser = newService.GetSingleUser("NonExistant", "NonExistant2");
+            Assert.AreEqual(null, deletedUser, "User was found when there shouldnt be a user");
+
         }
     }
 }

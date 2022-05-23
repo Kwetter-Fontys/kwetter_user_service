@@ -2,6 +2,9 @@
 using UserService.DAL.Repositories;
 using UserService.Models;
 using UserService.ViewModels;
+using System;
+using RabbitMQ.Client;
+using System.Text;
 
 namespace UserService.Services
 {
@@ -128,6 +131,8 @@ namespace UserService.Services
             //return "Person doesn't exist or is not followed";
         }
 
+
+        //Should be done through keycloak
         public UserViewModel CreateUser(string userTokenId)
         {
             if (UserRepository.FindUser(userTokenId) == null)
@@ -153,6 +158,52 @@ namespace UserService.Services
                 allUsers.Add(TransformToViewModel(user));
             }
             return allUsers;
+        }
+
+        public void DeleteUser(string userTokenId, User user)
+        {
+            if (userTokenId == user.Id)
+            {
+                if (UserRepository.FindUser(user.Id) != null)
+                {
+                    _logger.LogInformation("User with id: " + userTokenId + " was deleted");
+                    DeleteTweetsFromUser(userTokenId);
+                    UserRepository.DeleteUser(user);
+                }
+                else
+                {
+                    _logger.LogWarning("User with id: " + userTokenId + " not found");
+                }
+            }
+            else
+            {
+                _logger.LogWarning("User: " + userTokenId + " tried to delete and impersonate user: " + user.Id);
+            }
+        }
+
+        public void DeleteTweetsFromUser(string userTokenId)
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = "38.242.248.109",
+                UserName = "guest",
+                Password = "pi4snc7kpg#77Q#F"
+
+            };
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "hello2", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+                string message = "Hello World!";
+                var body = Encoding.UTF8.GetBytes(message);
+
+                channel.BasicPublish(exchange: "", routingKey: "hello", basicProperties: null, body: body);
+                Console.WriteLine(" [x] Sent {0}", message);
+            }
+
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
     }
 }

@@ -62,7 +62,7 @@ namespace UserTests
 
         public User EditUser(User user)
         {
-            int index = users.FindIndex(tweets => tweets.Id == user.Id);
+            int index = users.FindIndex(users => users.Id == user.Id);
             users[index] = user;
             return users[index];
         }
@@ -88,6 +88,10 @@ namespace UserTests
             friendsLinks.Remove(friendsLink);
         }
 
-
+        public void DeleteUser(User user)
+        {
+            User? deleteUser = FindUser(user.Id);
+            users.Remove(deleteUser);
+        }
     }
 }

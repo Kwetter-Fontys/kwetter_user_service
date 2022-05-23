@@ -58,11 +58,12 @@ namespace UserService.DAL.Repositories
 
         public void DeleteUser(User user)
         {
-            //Implemented later
+            userContext.ChangeTracker.Clear();
+            userContext.Remove(user);
+            userContext.SaveChanges();
         }
 
         //Follow "2" , "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9"
-
         //Unfollow "3", "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9"
         public FriendsLink? FindFollower(string follower, string followed)
         {

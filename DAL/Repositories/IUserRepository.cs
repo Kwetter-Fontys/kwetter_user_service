@@ -13,7 +13,7 @@ namespace UserService.DAL.Repositories
         List<User> GetFollowers(string id);
         List<User> GetFollowings(string id);
         User? FindUser(string id);
-
+        void DeleteUser(User user);
         User EditUser(User user);
         User CreateUser(User user);
 
