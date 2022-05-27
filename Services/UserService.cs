@@ -159,24 +159,25 @@ namespace UserService.Services
             return allUsers;
         }
 
-        public void DeleteUser(string userTokenId, User user)
+        public void DeleteUser(string userTokenId, string userId)
         {
-            if (userTokenId == user.Id)
+            if (userTokenId == userId)
             {
-                if (UserRepository.FindUser(user.Id) != null)
+                User? user = UserRepository.FindUser(userId);
+                if (user != null)
                 {
-                    _logger.LogInformation("User with id: " + userTokenId + " was deleted");
+                    _logger.LogInformation("User with id: {userTokenId}  was deleted", userTokenId);
                     DeleteTweetsFromUser(userTokenId);
                     UserRepository.DeleteUser(user);
                 }
                 else
                 {
-                    _logger.LogWarning("User with id: " + userTokenId + " not found");
+                    _logger.LogWarning("User with id: {userTokenId} not found", userTokenId);
                 }
             }
             else
             {
-                _logger.LogWarning("User: " + userTokenId + " tried to delete and impersonate user: " + user.Id);
+                _logger.LogWarning("User: {userTokenId} tried to delete and impersonate user: {userId}", userTokenId, userId);
             }
         }
 

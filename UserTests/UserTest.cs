@@ -281,7 +281,7 @@ namespace UserTests
         public void DeleteExistingUserWithCorrectToken()
         {
             UserServiceClass newService = CreateNewService();
-            newService.DeleteUser(MainUserId, ExistingUser);
+            newService.DeleteUser(MainUserId, ExistingUser.Id);
             UserViewModel? deletedUser = newService.GetSingleUser(MainUserId, MainUserId);
             Assert.AreEqual("", deletedUser.FirstName, "User wasn't correctly deleted");
         }
@@ -290,7 +290,7 @@ namespace UserTests
         public void DeleteExistingUserWithIncorrectToken()
         {
             UserServiceClass newService = CreateNewService();
-            newService.DeleteUser("", ExistingUser);
+            newService.DeleteUser("", ExistingUser.Id);
             UserViewModel? deletedUser = newService.GetSingleUser(MainUserId, MainUserId);
             Assert.AreEqual(ExistingUser.FirstName, deletedUser.FirstName, "User was deleted when it shouldn't be");
 
@@ -300,7 +300,7 @@ namespace UserTests
         public void DeleteNonExistingUserWithCorrectToken()
         {
             UserServiceClass newService = CreateNewService();
-            newService.DeleteUser("NonExistant", new User("test", "test") { Id = "NonExistant" });
+            newService.DeleteUser("NonExistant", "NonExistant");
             UserViewModel? deletedUser = newService.GetSingleUser("NonExistant", "NonExistant");
             Assert.AreEqual("", deletedUser.FirstName, "User was found when there shouldnt be a user");
 
@@ -310,7 +310,7 @@ namespace UserTests
         public void DeleteNonExistingUserWithIncorrectToken()
         {
             UserServiceClass newService = CreateNewService();
-            newService.DeleteUser("NonExistant", new User("test", "test") { Id = "NonExistant2" });
+            newService.DeleteUser("NonExistant",  "NonExistant2");
             UserViewModel? deletedUser = newService.GetSingleUser("NonExistant", "NonExistant2");
             Assert.AreEqual(null, deletedUser, "User was found when there shouldnt be a user");
 
