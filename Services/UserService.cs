@@ -10,7 +10,7 @@ namespace UserService.Services
 {
     public class UserServiceClass
     {
-        IUserRepository UserRepository;
+        private readonly IUserRepository UserRepository;
         private readonly ILogger _logger;
         private readonly IMessageSender messageSender;
         public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger, IMessageSender mSender)
@@ -32,11 +32,11 @@ namespace UserService.Services
             //Check if empty
             if (!followers.Any())
             {
-                _logger.LogWarning("List of empty followers was gotten from user: " + userId);
+                _logger.LogWarning("List of empty followers was gotten from user: {userId}" + userId);
             }
             else
             {
-                _logger.LogInformation("List of " + followers.Count.ToString() + " followers was gotten from user: " + userId);
+                _logger.LogInformation("List of {followers.Count} followers was gotten from user: {userId}", followers.Count, userId);
             }
             return TransformToViewModelList(followers);
         }
@@ -46,11 +46,11 @@ namespace UserService.Services
             //Check if empty
             if (!followings.Any())
             {
-                _logger.LogWarning("List of empty followings was gotten from user: " + userId);
+                _logger.LogWarning("List of empty followings was gotten from user: {userId}", userId);
             }
             else
             {
-                _logger.LogInformation("List of " + followings.Count.ToString() + " followings was gotten from user: " + userId);
+                _logger.LogInformation("List of { followings.Count}.ToString() followings was gotten from user: {userId}", followings.Count, userId);
             }
             return TransformToViewModelList(followings);
         }
@@ -69,10 +69,10 @@ namespace UserService.Services
             User? user = UserRepository.FindUser(id);
             if (user == null)
             {
-                _logger.LogWarning("User with id: " + id + " was not found");
+                _logger.LogWarning("User with id: {id} was not found", id);
                 return null;
             }
-            _logger.LogInformation("User with id: " + id + " was found");
+            _logger.LogInformation("User with id: {id} was found", id);
             return TransformToViewModel(user);
            
         }
@@ -83,17 +83,17 @@ namespace UserService.Services
             {
                 if (UserRepository.FindUser(user.Id) != null)
                 {
-                    _logger.LogInformation("User with id: " + userTokenId + " was edited");
+                    _logger.LogInformation("User with id: {userTokenId} was edited", userTokenId);
                     return TransformToViewModel(UserRepository.EditUser(user));
                 }
                 else
                 {
-                    _logger.LogWarning("User with id: " + userTokenId + " not found");
+                    _logger.LogWarning("User with id: {userTokenId} not found", userTokenId);
                 }
             }
             else
             {
-                _logger.LogWarning("User: " + userTokenId + " tried to edit and impersonate user: " + user.Id);
+                _logger.LogWarning("User: {userTokenId} tried to edit and impersonate user: {user.Id}",userTokenId, user.Id);
             }
             return TransformToViewModel(user);
         }
@@ -108,14 +108,13 @@ namespace UserService.Services
                 {
                     UserRepository.FollowUser(new FriendsLink() { UserFollowerId = userWantingToFollow, UserFollowingId = followedUser });
                     _logger.LogInformation("User: {userWantingToFollow} followed user: {followedUser}", userWantingToFollow, followedUser);
-                    return "Followed user";
+                    return "User followed";
                 }
                 _logger.LogWarning("User: {userWantingToFollow} already follows user: {followedUser}", userWantingToFollow, followedUser);
-                return "Person is already followed";
+                return "Uswer is already followed";
             }
             _logger.LogWarning("User: {userWantingToFollow} doesn't exist, or is user: {followedUser}", userWantingToFollow, followedUser);
-            return "{string: 'test'}";
-            //return "Person doesn't exist or is the same user";
+            return "User doesn't exist or is the same user";
         }
 
         public string UnFollowUser(string userWantingToUnfollow, string followedUser)
@@ -125,11 +124,10 @@ namespace UserService.Services
             {
                 UserRepository.UnFollowUser(friend);
                 _logger.LogInformation("User: {userWantingToUnfollow} unfollowed user: {followedUser}", userWantingToUnfollow, followedUser);
-                return "Person unfollowed";
+                return "User unfollowed";
             }
             _logger.LogWarning("User: {userWantingToUnfollow} doesn't exist, or doesn't follow user: {followedUser}", userWantingToUnfollow, followedUser);
-            return "{string: 'test'}";
-            //return "Person doesn't exist or is not followed";
+            return "User doesn't exist or is not followed";
         }
 
 

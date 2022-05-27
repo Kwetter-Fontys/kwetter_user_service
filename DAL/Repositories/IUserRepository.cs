@@ -17,7 +17,7 @@ namespace UserService.DAL.Repositories
         User EditUser(User user);
         User CreateUser(User user);
 
-        FriendsLink? FindFollower(string userWantingToFollow, string userBeingFollowed);
+        FriendsLink? FindFollower(string follower, string followed);
 
         public void FollowUser(FriendsLink friendsLink);
 

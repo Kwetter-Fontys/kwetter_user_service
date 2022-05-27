@@ -9,6 +9,7 @@ using UserService.Services;
 using UserService.ViewModels;
 using Microsoft.Extensions.Logging;
 
+
 namespace UserService.Controllers
 {
     [Authorize]
@@ -17,8 +18,7 @@ namespace UserService.Controllers
     public class UserController : ControllerBase
     {
         JwtTokenHelper jwtTokenHelper;
-        UserServiceClass userService;
-        private readonly IMessageSender messageSender;
+        readonly UserServiceClass userService;
         public UserController(IUserRepository useRepo, ILogger<UserServiceClass> logger, IMessageSender mSender)
         {
             jwtTokenHelper = new JwtTokenHelper();
@@ -74,7 +74,8 @@ namespace UserService.Controllers
         public string FollowUser(string followedUser)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            return userService.FollowUser(userTokenId, followedUser);
+            userService.FollowUser(userTokenId, followedUser);
+            return followedUser;
         }
 
         //Only that user or admin
@@ -82,7 +83,8 @@ namespace UserService.Controllers
         public string UnFollowUser(string userBeingFollowed)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
-            return userService.UnFollowUser(userTokenId, userBeingFollowed);
+            userService.UnFollowUser(userTokenId, userBeingFollowed);
+            return userBeingFollowed;
         }
     }
 }
