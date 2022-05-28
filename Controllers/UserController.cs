@@ -19,10 +19,10 @@ namespace UserService.Controllers
     {
         JwtTokenHelper jwtTokenHelper;
         readonly UserServiceClass userService;
-        public UserController(IUserRepository useRepo, ILogger<UserServiceClass> logger, IMessageSender mSender)
+        public UserController(IUserRepository useRepo, ILogger<UserServiceClass> logger)
         {
             jwtTokenHelper = new JwtTokenHelper();
-            userService = new UserServiceClass(useRepo, logger, mSender);
+            userService = new UserServiceClass(useRepo, logger);
         }
   
         [HttpGet] // GET /api/usercontroller

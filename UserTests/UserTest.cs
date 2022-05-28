@@ -33,14 +33,14 @@ namespace UserTests
         {
             var mock = new Mock<ILogger<UserServiceClass>>();
             logger = mock.Object;
-            var mock2 = new Mock<IMessageSender>();
-            rabbitMQ = mock2.Object;
-            ExistingService = new UserServiceClass(new MockUserRepository(), logger, rabbitMQ);
+            //var mock2 = new Mock<IMessageSender>();
+            //rabbitMQ = mock2.Object;
+            ExistingService = new UserServiceClass(new MockUserRepository(), logger);
         }
 
         public UserServiceClass CreateNewService()
         {
-            UserServiceClass newSerivce = new UserServiceClass(new MockUserRepository(), logger, rabbitMQ);
+            UserServiceClass newSerivce = new UserServiceClass(new MockUserRepository(), logger);
             return newSerivce;
         }
 

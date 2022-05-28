@@ -12,12 +12,11 @@ namespace UserService.Services
     {
         private readonly IUserRepository UserRepository;
         private readonly ILogger _logger;
-        private readonly IMessageSender messageSender;
-        public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger, IMessageSender mSender)
+        private IMessageSender messageSender;
+        public UserServiceClass(IUserRepository userRepo, ILogger<UserServiceClass> logger)
         {
             _logger = logger;
             UserRepository = userRepo;
-            messageSender = mSender;
         }
 
         public List<UserViewModel> GetAllUsers()
@@ -184,6 +183,10 @@ namespace UserService.Services
         public void DeleteTweetsFromUser(string userTokenId)
         {
             //Calls rabbitMQ
+            if (messageSender == null)
+            {
+                messageSender = new MessageSender();
+            }
             messageSender.SendMessage(userTokenId);
         }
 
