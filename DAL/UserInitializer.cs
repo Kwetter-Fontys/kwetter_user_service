@@ -18,7 +18,7 @@ namespace UserService.DAL
 
             List<User> users = new List<User>
             {
-                   new User("sebas", "bakker"){ Id = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", Biography= "Student at Fontys Hogeschool Eindhoven. Creator of Kwetter and everything else.", Location = "Amsterdam", Website = " www.kwetter.nl", Image = "./assets/test.jpg"
+                   new User("sebas", "bakker"){ Id = "bf40cabc-3cc7-49bb-aeba-cd1c6ab23dcc", Biography= "Student at Fontys Hogeschool Eindhoven. Creator of Kwetter and everything else.", Location = "Amsterdam", Website = " www.kwetter.nl", Image = "./assets/test.jpg"
                        },
                         
                    new User("Sebas2", "Bakker"){ Id = "c888f6c2-d4ce-442f-b630-52a91150f22a", Biography= "Hallo2", Location = "Papendrecht2", Website = "utube.com2", Image = "./assets/randomPerson1.png" },
@@ -32,9 +32,9 @@ namespace UserService.DAL
 
             List<FriendsLink> fl = new List<FriendsLink>
             {
-                new FriendsLink{UserFollowerId = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", UserFollowingId = "c888f6c2-d4ce-442f-b630-52a91150f22a"},
-                new FriendsLink{UserFollowerId = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", UserFollowingId = "3"},
-                new FriendsLink{UserFollowerId = "7cc35fc6-0eaf-4df8-aaef-773077b4f3c9", UserFollowingId = "4"},
+                new FriendsLink{UserFollowerId = "bf40cabc-3cc7-49bb-aeba-cd1c6ab23dcc", UserFollowingId = "c888f6c2-d4ce-442f-b630-52a91150f22a"},
+                new FriendsLink{UserFollowerId = "bf40cabc-3cc7-49bb-aeba-cd1c6ab23dcc", UserFollowingId = "3"},
+                new FriendsLink{UserFollowerId = "bf40cabc-3cc7-49bb-aeba-cd1c6ab23dcc", UserFollowingId = "4"},
                 new FriendsLink{UserFollowerId = "c888f6c2-d4ce-442f-b630-52a91150f22a", UserFollowingId = "4"},
             };
             context.FriendsLinks.AddRange(fl);

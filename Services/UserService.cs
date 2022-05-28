@@ -186,5 +186,9 @@ namespace UserService.Services
             //Calls rabbitMQ
             messageSender.SendMessage(userTokenId);
         }
+
+
+
+        //fh9!x?YN4AQ&!skt
     }
 }
