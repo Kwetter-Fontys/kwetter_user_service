@@ -18,27 +18,32 @@ namespace UserService.Controllers
     public class UserController : ControllerBase
     {
         JwtTokenHelper jwtTokenHelper;
-        readonly UserServiceClass userService;
-        public UserController(IUserRepository useRepo, ILogger<UserServiceClass> logger)
+        readonly IUserService userService;
+        private readonly ILogger _logger;
+        public UserController(IUserService userServ, ILogger<UserController> logger)
         {
             jwtTokenHelper = new JwtTokenHelper();
-            userService = new UserServiceClass(useRepo, logger);
+            userService = userServ;
+            _logger = logger;
         }
   
         [HttpGet] // GET /api/usercontroller
         public List<UserViewModel> GetAllUsers()
         {
+            _logger.LogInformation("GetAllUsers() was called");
             return userService.GetAllUsers();
         }
 
         [HttpGet("followers/{userid}")] // GET /api/usercontroller/followers/xyz
         public List<UserViewModel> GetFollowers(string userid)
         {
+            _logger.LogInformation("GetFollowers() was called by user: {userid}", userid);
             return userService.GetAllFollowersFromUser(userid);
         }
         [HttpGet("followings/{userid}")] // GET /api/usercontroller/followings/xyz
         public List<UserViewModel> GetFollowings(string userid)
         {
+            _logger.LogInformation("GetFollowings() was called by user: {userid}", userid);
             return userService.GetAllFollowingsFromUser(userid);
         }
 
@@ -46,6 +51,7 @@ namespace UserService.Controllers
         public UserViewModel? GetSingleUser(string userid)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            _logger.LogInformation("GetSingleUser() was called by user: {userTokenId}", userTokenId);
             return userService.GetSingleUser(userid, userTokenId);
         }
 
@@ -55,6 +61,7 @@ namespace UserService.Controllers
         public UserViewModel EditSingleUser(User user)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            _logger.LogInformation("EditSingleUser() was called by user: {userTokenId}", userTokenId);
             return userService.EditSingleUser(userTokenId, user);
         }
 
@@ -64,6 +71,7 @@ namespace UserService.Controllers
         public string DeleteUser (string userId)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            _logger.LogInformation("DeleteUser() was called by user: {userTokenId}", userTokenId);
             userService.DeleteUser(userTokenId, userId);
             return userId;
         }
@@ -74,6 +82,7 @@ namespace UserService.Controllers
         public string FollowUser(string followedUser)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            _logger.LogInformation("FollowUser() was called by user: {userTokenId}", userTokenId);
             userService.FollowUser(userTokenId, followedUser);
             return followedUser;
         }
@@ -83,6 +92,7 @@ namespace UserService.Controllers
         public string UnFollowUser(string userBeingFollowed)
         {
             string userTokenId = jwtTokenHelper.GetId(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", ""));
+            _logger.LogInformation("UnFollowUser() was called by user: {userTokenId}", userTokenId);
             userService.UnFollowUser(userTokenId, userBeingFollowed);
             return userBeingFollowed;
         }

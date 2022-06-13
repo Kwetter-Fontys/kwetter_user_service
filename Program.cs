@@ -65,6 +65,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Inject repo
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserServiceClass>();
 builder.Services.AddTransient<IMessageSender, MessageSender>();
 
 if (builder.Environment.IsDevelopment())

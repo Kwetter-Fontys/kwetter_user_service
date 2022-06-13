@@ -8,7 +8,7 @@ using System.Text;
 
 namespace UserService.Services
 {
-    public class UserServiceClass
+    public class UserServiceClass : IUserService
     {
         private readonly IUserRepository UserRepository;
         private readonly ILogger _logger;
@@ -49,7 +49,7 @@ namespace UserService.Services
             }
             else
             {
-                _logger.LogInformation("List of { followings.Count}.ToString() followings was gotten from user: {userId}", followings.Count, userId);
+                _logger.LogInformation("List of {followings.Count}.ToString() followings was gotten from user: {userId}", followings.Count, userId);
             }
             return TransformToViewModelList(followings);
         }
@@ -151,10 +151,16 @@ namespace UserService.Services
         public List<UserViewModel> TransformToViewModelList(List<User> users)
         {
             List<UserViewModel> allUsers = new List<UserViewModel>();
-            foreach (User user in users)
-            {
-                allUsers.Add(TransformToViewModel(user));
-            }
+            allUsers = users.Select(x => new UserViewModel 
+            { 
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Location = x.Location,
+                Website = x.Website,
+                Biography = x.Biography,
+                Image = x.Image
+            }).ToList();
             return allUsers;
         }
 
