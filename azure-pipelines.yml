@@ -49,6 +49,20 @@ stages:
         projects: '**/*.csproj'
         arguments: '--collect "Code Coverage"'
         testRunTitle: 'All tests'
+    - task: dependency-check-build-task@6
+      inputs:
+        projectName: 'kwetter-user-service'
+        scanPath: '$(Build.SourcesDirectory)/**/bin/Debug/net6.0/*.dll'
+        format: 'HTML, JUNIT'
+        failOnCVSS: '8'
+        
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUNIT'
+        testResultsFiles: '**/*-junit.xml'
+        searchFolder: '$(Common.TestResultsDirectory)'
+        failTaskOnFailedTests: true
+        testRunTitle: 'Dependency check'
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
