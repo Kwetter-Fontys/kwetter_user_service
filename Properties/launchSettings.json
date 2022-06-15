@@ -6,7 +6,14 @@
     "Development": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Audience": "account",
+        "RabbitMQQueueName": "deleteTweets",
+        "RabbitMQPassword": "pi4snc7kpg#77Q#F",
+        "Database": "server=localhost;port=3306;database=kwetter;user=root;password=CEzmBKLB8?f5s!G7",
+        "Authority": "https://keycloak.sebananasprod.nl/auth/realms/Kwetter",
+        "RabbitMQHost": "38.242.248.109",
+        "RabbitMQUsername": "guest"
       }
     }
   }

@@ -36,10 +36,8 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(o =>
 {
-    //o.Authority = Configuration["Jwt:Authority"];
-    //o.Audience = Configuration["Jwt:Audience"];
-    o.Authority = "https://keycloak.sebananasprod.nl/auth/realms/Kwetter";
-    o.Audience = "account";
+    o.Authority = Environment.GetEnvironmentVariable("Authority");
+    o.Audience = Environment.GetEnvironmentVariable("Audience");
     o.Events = new JwtBearerEvents()
     {
         OnAuthenticationFailed = c =>
@@ -59,25 +57,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+#pragma warning disable CS8604 // Possible null reference argument.
+builder.Services.AddDbContext<UserContext>(options =>
+options.UseMySQL(Environment.GetEnvironmentVariable("Database")));
+
+#pragma warning restore CS8604 // Possible null reference argument.
+
 //Inject repo
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserServiceClass>();
 builder.Services.AddTransient<IMessageSender, MessageSender>();
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<UserContext>(options =>
-    options.UseMySQL("server=localhost;port=3306;database=kwetter;user=root;password=CEzmBKLB8?f5s!G7"));
-}
-else
-{
-    builder.Services.AddDbContext<UserContext>(options =>
-    options.UseMySQL("server=38.242.248.109;port=3309;database=kwetter;user=root;password=CEzmBKLB8?f5s!G7"));
-}
+
+
 
 builder.Services.AddControllers();
 var app = builder.Build();
