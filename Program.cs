@@ -60,8 +60,9 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 #pragma warning disable CS8604 // Possible null reference argument.
-builder.Services.AddDbContext<UserContext>(options =>
+ builder.Services.AddDbContext<UserContext>(options =>
 options.UseMySQL(Environment.GetEnvironmentVariable("Database")));
 
 #pragma warning restore CS8604 // Possible null reference argument.

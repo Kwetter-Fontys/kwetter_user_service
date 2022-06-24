@@ -135,7 +135,7 @@ namespace UserService.Services
         {
             if (UserRepository.FindUser(userTokenId) == null)
             {
-                User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/randomPerson10.jpg" };
+                User user = new User("", "") { Id = userTokenId, Location = "", Biography = "", Website = "", Image = "./assets/defaultPicture.png" };
                 _logger.LogInformation("User: {userTokenId} succesfully created", userTokenId);
                 return TransformToViewModel(UserRepository.CreateUser(user));
             }
